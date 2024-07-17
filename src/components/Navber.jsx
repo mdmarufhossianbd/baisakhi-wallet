@@ -1,7 +1,20 @@
+import { useContext } from 'react';
+import toast, { Toaster } from 'react-hot-toast';
 import { Link, NavLink } from 'react-router-dom';
 import logo from '../assets/image/logo (1).png';
+import { AuthContext } from '../Provider/AuthProvider';
 const Navber = () => {
-    const user = false
+    const { user, logOut } = useContext(AuthContext);
+
+    const handleLogOut = async () => {
+        await fetch('http://localhost:5000/logout', {
+            method: "POST",
+            credentials: 'include'
+        })
+        logOut()
+        toast.success("Logout successfully")
+    }
+
     const navLinks = [
         {
             title: "Home",
@@ -27,13 +40,16 @@ const Navber = () => {
             </div>
             {/* user auth */}
             <div>
-                {user ? <div></div> : 
-                <div className='flex gap-4'>
-                    <Link to={'/register'} className='bg-[#ffaa00d7] px-5 py-2 rounded-full text-white font-medium hover:bg-[#ED056F]'>Register</Link>
-                    <Link to={'/login'} className='bg-[#ED056F] px-5 py-2 rounded-full text-white font-medium hover:bg-[#ffaa00d7]'>Login</Link>
-                </div>}
+                {user ? <div><button onClick={handleLogOut} className='bg-red-400 px-5 py-2 rounded-full text-white hover:bg-red-500'>Logout</button></div> :
+                    <div className='flex gap-4'>
+                        <Link to={'/register'} className='bg-[#ffaa00d7] px-5 py-2 rounded-full text-white font-medium hover:bg-[#ED056F]'>Register</Link>
+                        <Link to={'/login'} className='bg-[#ED056F] px-5 py-2 rounded-full text-white font-medium hover:bg-[#ffaa00d7]'>Login</Link>
+                    </div>}
             </div>
-
+            <Toaster
+                position="top-right"
+                reverseOrder={false}
+            />
         </div>
     );
 };
